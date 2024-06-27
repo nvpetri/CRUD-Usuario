@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model tbl_endereco {
+  id          Int       @id @unique(map: "id") @default(autoincrement())
+  usuario_id  Int
+  rua         String    @db.VarChar(255)
+  numero      String?   @db.VarChar(10)
+  complemento String?   @db.VarChar(255)
+  bairro      String?   @db.VarChar(255)
+  cidade      String    @db.VarChar(255)
+  estado      String    @db.VarChar(2)
+  cep         String    @db.VarChar(10)
+  pais        String    @db.VarChar(50)
+  tbl_users   tbl_users @relation(fields: [usuario_id], references: [id], onUpdate: Restrict, map: "tbl_endereco_ibfk_1")
+
+  @@index([usuario_id], map: "usuario_id")
+}
+
+model tbl_users {
+  id           Int            @unique(map: "id") @default(autoincrement())
+  nome         String         @db.VarChar(80)
+  email        String?        @db.VarChar(255)
+  cpf          String         @db.VarChar(14)
+  rg           String         @db.VarChar(13)
+  telefone     String?        @db.VarChar(15)
+  tbl_endereco tbl_endereco[]
+}
